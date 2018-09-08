@@ -1,0 +1,48 @@
+Metrics/LineLength:
+  Max: 100
+Metrics/BlockLength:
+  ExcludedMethods:
+    - describe
+    - context
+Layout/EmptyLinesAroundClassBody:
+  EnforcedStyle: empty_lines
+Layout/EmptyLinesAroundModuleBody:
+  EnforcedStyle: empty_lines
+Layout/FirstArrayElementLineBreak:
+  Enabled: true
+Layout/FirstHashElementLineBreak:
+  Enabled: true
+Layout/MultilineAssignmentLayout:
+  Enabled: true
+Layout/DotPosition:
+  EnforcedStyle: trailing
+Style/OptionHash:
+  Enabled: true
+Naming/FileName:
+  Exclude:
+    - 'Gemfile'
+Style/ClassAndModuleChildren:
+  Enabled: false
+Style/FrozenStringLiteralComment:
+  Enabled: false
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+  SupportedStyles:
+    - single_quotes
+    - double_quotes
+
+AllCops:
+  Include:
+    - '**/*.rb'
+    - '**/*.rake'
+    - '**/Rakefile'
+    - '**/config.ru'
+  Exclude:
+    - bin/**
+    - db/schema.rb
+    - config/**/**
+    - script/**/*
+    - spec/rails_helper.rb
+    - spec/spec_helper.rb
+Rails:
+  Enabled: true
