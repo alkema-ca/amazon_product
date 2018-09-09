@@ -5,11 +5,10 @@ module Amazon
     # Extract the primary ranking from a DOM node's text content, full of whitespace
     class PrimaryCategory
 
-      CATEGORY_EXPRESSION = /#(?<rank>\d+)\s+in\s+(?<name>.+)\s\(.+\)/
+      CATEGORY_EXPRESSION = /#(?<rank>\S+)\s+in\s+(?<name>.+)\s\(.+\)/
 
       def initialize(text)
         @text = text
-
         @match = primary_category_text.match(CATEGORY_EXPRESSION)
       end
 
@@ -18,8 +17,13 @@ module Amazon
       end
 
       def data
-        attributes = MatchHash.call(@match)
         Amazon::Data::Category.new(attributes)
+      end
+
+      def attributes
+        atts = MatchHash.call(@match)
+        atts[:rank] = atts[:rank].split(/,/).first
+        atts
       end
 
     end

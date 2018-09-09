@@ -17,7 +17,6 @@ module Amazon
         @connection =
           ::Faraday.new(@endpoint, connection_options) do |conn|
             conn.response :logger, logger, bodies: false
-
             conn.adapter ::Faraday.default_adapter
           end
       end

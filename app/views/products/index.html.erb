@@ -1,0 +1,35 @@
+<%= form_for(@product) do |f| %>
+  <%= f.text_field :asin %>
+  <%= submit_tag("Find") %>
+<% end %>
+
+<table>
+  <tr>
+    <th>
+      ASIN
+    </th>
+    <th>
+      Best Sellers Rank
+    </th>
+  </tr>
+<% @products.each do |product| %>
+  <tr>
+    <td>
+      <%= product.asin %>
+    </td>
+    <td>
+      <ul>
+      <% product.categories.order('id asc, set_id asc').group_by(&:set_id).each do |set, categories| %>
+        <li>
+          <b>#<%= categories.last.rank.to_i %></b>
+          <% categories.each_with_index do |category, i| %>
+            <% if i > 0 %> > <% end %>
+            <%= category.name %>
+          <% end %>
+        </li>
+      <% end %>
+      </ul>
+    </td>
+  </tr>
+<% end %>
+</table>

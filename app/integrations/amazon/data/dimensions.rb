@@ -11,7 +11,7 @@ module Amazon
       attribute :width, Decimal
       attribute :height, Decimal
 
-      attribute :units, String
+      attribute :dimensions_units, String
 
     end
 

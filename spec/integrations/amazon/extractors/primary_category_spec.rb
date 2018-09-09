@@ -9,7 +9,7 @@ RSpec.describe Amazon::Extractors::PrimaryCategory do
     <<~INNERTEXT
 
 
-    #6 in Baby (See top 100)
+    #{primary_category}
 
 
         #1
@@ -24,6 +24,8 @@ RSpec.describe Amazon::Extractors::PrimaryCategory do
   # rubocop:enable Layout/IndentHeredoc
 
   context 'B002QYW8LW' do
+    let(:primary_category) { '#6 in Baby (See top 100)' }
+
     describe '.data' do
       it 'returns the primary category as category data' do
         expect(subject.data).to have_attributes(name: 'Baby', rank: 6)
@@ -33,6 +35,22 @@ RSpec.describe Amazon::Extractors::PrimaryCategory do
     describe '.primary_category_text' do
       it 'extracts the primary category text' do
         expect(subject.primary_category_text).to eq('#6 in Baby (See top 100)')
+      end
+    end
+  end
+
+  context 'B01M6CUSV9' do
+    let(:primary_category) { '#1,657 in Baby (See top 100)' }
+
+    describe '.data' do
+      it 'returns the primary category as category data' do
+        expect(subject.data).to have_attributes(name: 'Baby', rank: 1)
+      end
+    end
+
+    describe '.primary_category_text' do
+      it 'extracts the primary category text' do
+        expect(subject.primary_category_text).to eq('#1,657 in Baby (See top 100)')
       end
     end
   end

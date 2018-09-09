@@ -27,7 +27,7 @@ module Amazon
         ).data
       end
 
-      secondary_categories.flatten
+      secondary_categories
     end
 
   end
