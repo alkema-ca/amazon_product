@@ -9,8 +9,7 @@ class ProductsController < ApplicationController
   def create
     asin = product_params[:asin]
 
-    product_parser = Products::Fetcher.call(asin)
-    Products::Create.call(asin: asin, product_parser: product_parser)
+    FetchProductJob.perform_later(asin)
 
     redirect_to root_url
   end

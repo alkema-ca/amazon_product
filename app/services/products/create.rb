@@ -21,8 +21,7 @@ class Products::Create
       @product.save!
 
       assign_product_page
-      create_primary_category
-      create_secondary_categories
+      create_categories
     end
   end
 
