@@ -1,42 +1,64 @@
-<%= form_for(@product) do |f| %>
-  <%= f.text_field :asin %>
-  <%= submit_tag("Find") %>
-<% end %>
+<div class="row">
+  <div class="col-md-6 offset-md-3">
+    <h1 class="mt-5">Amazon Product Fetcher</h1>
+    <%= form_for(@product) do |f| %>
+      <div class="form-group">
+        <label for="asin">Amazon ASIN</label>
+        <%= f.text_field :asin, class: "form-control" %>
+        <small id="asinHelp" class="form-text text-muted">
+          You can find the ASIN on the item's product information page at Amazon.com
+        </small>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    <% end %>
+  </div>
+</div>
 
-<table>
-  <tr>
-    <th>
-      ASIN
-    </th>
-    <th>
-      Best Sellers Rank
-    </th>
-    <th>
-      Dimensions
-    </th>
-  </tr>
-  <% @products.each do |product| %>
-  <tr>
-    <td valign="top">
-      <%= product.asin %>
-    </td>
-    <td valign="top">
-      <ul>
-      <% product.grouped_category_sets.each do |set, categories| %>
-        <li>
-          <b>#<%= categories.last.rank.to_i %></b>
-          in
-          <% categories.each_with_index do |category, i| %>
-            <% if i > 0 %> > <% end %>
-            <%= category.name %>
+<% if @products.any? %>
+<div class="products">
+  <div class="row">
+    <div class="col-md-10 offset-md-1">
+
+      <caption>Fetched Amazon Products</caption>
+        <table class="table table-striped table-hover table-sm table-responsive">
+          <tr>
+            <th scope="col">
+              ASIN
+            </th>
+            <th scope="col">
+              Best Sellers Rank
+            </th>
+            <th scope="col">
+              Dimensions
+            </th>
+          </tr>
+          <% @products.each do |product| %>
+          <tr>
+            <td valign="top">
+              <%= product.asin %>
+            </td>
+            <td valign="top">
+              <ul>
+              <% product.grouped_category_sets.each do |set, categories| %>
+                <li>
+                  <b>#<%= categories.last.rank.to_i %></b>
+                  in
+                  <% categories.each_with_index do |category, i| %>
+                    <% if i > 0 %> > <% end %>
+                    <%= category.name %>
+                  <% end %>
+                </li>
+              <% end %>
+              </ul>
+            </td>
+            <td valign="top">
+              <%= dimensions(product) %>
+            </td>
+          </tr>
           <% end %>
-        </li>
-      <% end %>
-      </ul>
-    </td>
-    <td valign="top">
-      <%= dimensions(product) %>
-    </td>
-  </tr>
-  <% end %>
-</table>
+        </table>
+
+    </div>
+  </div>
+</div>
+<% end %>
