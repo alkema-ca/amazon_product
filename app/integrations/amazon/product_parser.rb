@@ -3,10 +3,12 @@ module Amazon
   # Given a product page's body, parse out dimensions, categories and rank into data objects
   class ProductParser
 
-    attr_reader :body
+    attr_reader :page_request
 
-    def initialize(body)
-      @body = body
+    def initialize(page_request)
+      @page_request = page_request
+      @body = @page_request.body
+
       @page = Amazon::Page.call(@body)
     end
 

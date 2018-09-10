@@ -5,7 +5,7 @@ class FetchProductJob < ApplicationJob
 
   def perform(asin)
     product_parser = Products::Fetcher.call(asin)
-    Products::Create.call(asin: asin, product_parser: product_parser)
+    Products::Create.call(product_parser)
   end
 
 end

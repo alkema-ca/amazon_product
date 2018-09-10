@@ -7,9 +7,9 @@ module Products
       client = Amazon::Connection::Client.new
       response = client.get("/dp/#{asin}")
       body = response.body
-      product_parser = Amazon::ProductParser.new(body)
 
-      product_parser
+      page_request = PageRequest.create!(asin: asin, status: response.status, body: body)
+      Amazon::ProductParser.new(page_request)
     end
 
   end

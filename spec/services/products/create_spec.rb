@@ -1,11 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe Products::Create do
-  subject { described_class.new(asin: asin, product_parser: product_parser) }
+  subject { described_class.new(product_parser) }
 
   let(:body) { IO.read(Rails.root.join('spec', 'fixtures', "#{asin}.html")) }
+  let(:page_request) do
+    PageRequest.new(asin: asin, status: 200, body: body)
+  end
 
-  let(:product_parser) { Amazon::ProductParser.new(body) }
+  let(:product_parser) { Amazon::ProductParser.new(page_request) }
   let(:product) { Product.last }
 
   context 'B002QYW8LW' do
@@ -22,9 +25,9 @@ RSpec.describe Products::Create do
       )
     end
 
-    it 'assigns a product to product page' do
+    it 'assigns a product to page request' do
       subject.call
-      expect(product.product_page).to be_a(ProductPage)
+      expect(product.page_request).to be_a(PageRequest)
     end
 
     it 'assigns categories to product' do
@@ -44,7 +47,6 @@ RSpec.describe Products::Create do
 
       expect(Product.count).to eq(0)
       expect(Category.count).to eq(0)
-      expect(ProductPage.count).to eq(1)
     end
 
     it 'does not create duplicate categories when resubmitted' do

@@ -3,24 +3,24 @@ class Products::Create
 
   extend Callable
 
-  def initialize(asin:, product_parser:)
-    @asin = asin
+  def initialize(product_parser)
     @product_parser = product_parser
+    @page_request = @product_parser.page_request
+
+    @asin = @page_request.asin
+    @body = @page_request.body
 
     @product = Product.find_or_initialize_by(asin: @asin)
-    @body = @product_parser.body
   end
 
   def call
-    @product_page = ProductPage.create!(body: @body)
-
     ActiveRecord::Base.transaction do
       @product.categories.destroy_all if @product.persisted?
 
       @product.attributes = @product_parser.dimensions.attributes if @product_parser.dimensions
       @product.save!
 
-      assign_product_page
+      assign_page_request!
       create_categories
     end
   end
@@ -32,8 +32,8 @@ class Products::Create
     create_secondary_categories
   end
 
-  def assign_product_page
-    @product_page.update!(product: @product)
+  def assign_page_request!
+    @page_request.update!(product: @product)
   end
 
   def create_primary_category

@@ -1,10 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe Amazon::ProductParser do
-  subject { described_class.new(body) }
+  subject { described_class.new(page_request) }
 
   let(:body) do
     IO.read(Rails.root.join('spec', 'fixtures', "#{asin}.html"))
+  end
+  let(:page_request) do
+    PageRequest.new(asin: asin, status: 200, body: body)
   end
 
   let(:asin) { 'B002QYW8LW' }
