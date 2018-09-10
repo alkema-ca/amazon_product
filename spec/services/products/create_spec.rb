@@ -3,26 +3,61 @@ require 'rails_helper'
 RSpec.describe Products::Create do
   subject { described_class.new(asin: asin, product_parser: product_parser) }
 
-  let(:call) { subject.call }
-
   let(:body) { IO.read(Rails.root.join('spec', 'fixtures', "#{asin}.html")) }
 
   let(:product_parser) { Amazon::ProductParser.new(body) }
+  let(:product) { Product.last }
 
   context 'B002QYW8LW' do
     let(:asin) { 'B002QYW8LW' }
 
-    it 'creates a Product' do
-      expect { call }.to change { Product.count }.from(0).to(1)
+    it 'creates a product' do
+      expect { subject.call }.to change { Product.count }.from(0).to(1)
+    end
+
+    it 'creates a product with dimensions' do
+      subject.call
+      expect(product).to have_attributes(
+        length: 4.3, width: 0.4, height: 7.9, dimensions_units: 'inches'
+      )
+    end
+
+    it 'assigns a product to product page' do
+      subject.call
+      expect(product.product_page).to be_a(ProductPage)
+    end
+
+    it 'assigns categories to product' do
+      subject.call
+      expect(product.categories.count).to eq(8)
+      expect(product.categories).to all(be_a(Category))
+    end
+
+    it 'assigns categories with `set_id`' do
+      subject.call
+      expect(product.categories).to all(have_attributes(set_id: be_an(Integer)))
+    end
+
+    it 'creates relations within a transaction, except product page' do
+      allow_any_instance_of(Product).to receive(:save!).and_raise(ActiveRecord::StaleObjectError)
+      expect { subject.call }.to raise_error(ActiveRecord::StaleObjectError)
+
+      expect(Product.count).to eq(0)
+      expect(Category.count).to eq(0)
+      expect(ProductPage.count).to eq(1)
+    end
+
+    it 'does not create duplicate categories when resubmitted' do
+      subject.call
+      expect { subject.call }.not_to change { product.categories.count }.from(8)
     end
   end
 
-  context 'B077JZ4N7D' do
+  context 'B077JZ4N7D (no primary category)' do
     let(:asin) { 'B077JZ4N7D' }
 
-    it 'creates a Product' do
-      expect { call }.to change { Product.count }.from(0).to(1)
+    it 'creates a product despite missing primary category content' do
+      expect { subject.call }.to change { Product.count }.from(0).to(1)
     end
   end
-
 end

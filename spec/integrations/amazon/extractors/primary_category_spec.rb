@@ -49,5 +49,4 @@ RSpec.describe Amazon::Extractors::PrimaryCategory do
       end
     end
   end
-
 end

@@ -12,16 +12,29 @@ class Products::Create
   end
 
   def call
+    @product_page = ProductPage.create!(body: @body)
+
     ActiveRecord::Base.transaction do
+      @product.categories.destroy_all if @product.persisted?
+
       @product.attributes = @product_parser.dimensions.attributes if @product_parser.dimensions
       @product.save!
 
-      @product_page = @product.build_product_page(body: @body)
-      @product_page.save!
-
+      assign_product_page
       create_primary_category
       create_secondary_categories
     end
+  end
+
+  private
+
+  def create_categories
+    create_primary_category
+    create_secondary_categories
+  end
+
+  def assign_product_page
+    @product_page.update!(product: @product)
   end
 
   def create_primary_category

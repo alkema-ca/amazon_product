@@ -22,14 +22,6 @@ module Amazon
       @secondary_categories ||= Extractors::SecondaryCategories.new(@page).data
     end
 
-    def validate!
-      raise 'Cannot parse product page' unless valid?
-    end
-
-    def valid?
-      dimensions && primary_category && secondary_categories.any?
-    end
-
   end
 
 end

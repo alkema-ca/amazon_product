@@ -8,7 +8,7 @@ module Products
       response = client.get("/dp/#{asin}")
       body = response.body
       product_parser = Amazon::ProductParser.new(body)
-      # product_parser.validate!
+
       product_parser
     end
 
