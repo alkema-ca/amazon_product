@@ -2,12 +2,13 @@ module Amazon
 
   module Extractors
 
-    # Extract several categories and one ranking for a given product's 'Best Sellers Rank' row
+    # Extract secondary category
     class SecondaryCategory
 
-      def initialize(ladder_text:, rank_text:)
-        @ladder_text = ladder_text
-        @rank_text = rank_text
+      def initialize(secondary_category_node)
+        @secondary_category_node = secondary_category_node
+        @ladder_text = @secondary_category_node[:ladder].text
+        @rank_text = @secondary_category_node[:rank].text
 
         @category_names = category_names
       end

@@ -1,33 +1,33 @@
 module Amazon
 
-  # Given an product page's body, parse out dimensions, categories and rank into data objects
+  # Given a product page's body, parse out dimensions, categories and rank into data objects
   class ProductParser
 
+    attr_reader :body
+
     def initialize(body)
-      @page = Nokogiri::HTML(body, Encoding::UTF_8.to_s)
-      @category_node = Locators::Category.call(@page)
+      @body = body
+      @page = Amazon::Page.call(@body)
     end
 
     def dimensions
-      dimensions_node = Locators::Dimensions.call(@page)
-      Extractors::Dimensions.new(dimensions_node.text).data
+      @dimensions ||= Extractors::Dimensions.new(@page).data
     end
 
     def primary_category
-      Extractors::PrimaryCategory.new(@category_node.text).data
+      @primary_category ||= Extractors::PrimaryCategory.new(@page).data
     end
 
     def secondary_categories
-      secondary_categories_nodes = Locators::SecondaryCategories.call(@category_node)
+      @secondary_categories ||= Extractors::SecondaryCategories.new(@page).data
+    end
 
-      secondary_categories = []
-      secondary_categories_nodes.each do |secondary_category|
-        secondary_categories << Extractors::SecondaryCategory.new(
-          ladder_text: secondary_category[:ladder].text, rank_text: secondary_category[:rank].text
-        ).data
-      end
+    def validate!
+      raise 'Cannot parse product page' unless valid?
+    end
 
-      secondary_categories
+    def valid?
+      dimensions && primary_category && secondary_categories.any?
     end
 
   end

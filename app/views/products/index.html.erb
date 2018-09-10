@@ -11,17 +11,21 @@
     <th>
       Best Sellers Rank
     </th>
+    <th>
+      Dimensions
+    </th>
   </tr>
-<% @products.each do |product| %>
+  <% @products.each do |product| %>
   <tr>
-    <td>
+    <td valign="top">
       <%= product.asin %>
     </td>
-    <td>
+    <td valign="top">
       <ul>
-      <% product.categories.order('id asc, set_id asc').group_by(&:set_id).each do |set, categories| %>
+      <% product.grouped_category_sets.each do |set, categories| %>
         <li>
           <b>#<%= categories.last.rank.to_i %></b>
+          in
           <% categories.each_with_index do |category, i| %>
             <% if i > 0 %> > <% end %>
             <%= category.name %>
@@ -30,6 +34,9 @@
       <% end %>
       </ul>
     </td>
+    <td valign="top">
+      <%= dimensions(product) %>
+    </td>
   </tr>
-<% end %>
+  <% end %>
 </table>

@@ -9,13 +9,8 @@ class ProductsController < ApplicationController
   def create
     asin = product_params[:asin]
 
-    client = Amazon::Connection::Client.new
-    response = client.get("/dp/#{asin}")
-    body = response.body
-
-    # body = IO.read(Rails.root.join('spec', 'fixtures', "#{asin}.html"))
-
-    Products::Create.call(asin: asin, body: body)
+    product_parser = Products::Fetcher.call(asin)
+    Products::Create.call(asin: asin, product_parser: product_parser)
 
     redirect_to root_url
   end

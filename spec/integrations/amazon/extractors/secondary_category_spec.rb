@@ -1,15 +1,25 @@
 require 'rails_helper'
 
 RSpec.describe Amazon::Extractors::SecondaryCategory do
-  subject { described_class.new(ladder_text: ladder_text, rank_text: rank_text) }
+  subject { described_class.new(node) }
 
-  let(:ladder_text) { 'in Baby > Baby Care > Health' }
-  let(:rank_text) { '#1' }
+  let(:body) do
+    IO.read(Rails.root.join('spec', 'fixtures', "#{asin}.html"))
+  end
+
+  let(:page) { Amazon::Page.call(body) }
+
+  let(:node) do
+    category_node = Amazon::Locators::Category.call(page)
+    Amazon::Locators::SecondaryCategories.call(category_node).first
+  end
 
   let(:first_category) { subject.data.first }
   let(:last_category) { subject.data.last }
 
   context 'B002QYW8LW' do
+    let(:asin) { 'B002QYW8LW' }
+
     describe '.data' do
       it 'returns several categories' do
         expect(subject.data.length).to eq(3)

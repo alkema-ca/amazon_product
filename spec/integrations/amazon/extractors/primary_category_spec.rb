@@ -1,57 +1,53 @@
 require 'rails_helper'
 
 RSpec.describe Amazon::Extractors::PrimaryCategory do
-  subject { described_class.new(text) }
+  subject { described_class.new(page) }
 
-  # rubocop:disable Layout/IndentHeredoc
-  # Allow text with messy whitespace to replicate actual DOM content
-  let(:text) do
-    <<~INNERTEXT
-
-
-    #{primary_category}
-
-
-        #1
-        inBaby > Baby Care > Health
-
-
-        #2
-        inBaby > Baby Care > Pacifiers, Teethers & Teething Relief > Teethers
-
-    INNERTEXT
+  let(:body) do
+    IO.read(Rails.root.join('spec', 'fixtures', "#{asin}.html"))
   end
-  # rubocop:enable Layout/IndentHeredoc
+
+  let(:page) { Amazon::Page.call(body) }
 
   context 'B002QYW8LW' do
-    let(:primary_category) { '#6 in Baby (See top 100)' }
+    let(:asin) { 'B002QYW8LW' }
 
     describe '.data' do
       it 'returns the primary category as category data' do
         expect(subject.data).to have_attributes(name: 'Baby', rank: 6)
       end
     end
-
-    describe '.primary_category_text' do
-      it 'extracts the primary category text' do
-        expect(subject.primary_category_text).to eq('#6 in Baby (See top 100)')
-      end
-    end
   end
 
   context 'B01M6CUSV9' do
-    let(:primary_category) { '#1,657 in Baby (See top 100)' }
+    let(:asin) { 'B01M6CUSV9' }
 
     describe '.data' do
       it 'returns the primary category as category data' do
         expect(subject.data).to have_attributes(name: 'Baby', rank: 1)
       end
     end
+  end
 
-    describe '.primary_category_text' do
-      it 'extracts the primary category text' do
-        expect(subject.primary_category_text).to eq('#1,657 in Baby (See top 100)')
+  context 'B01N7QZG8B' do
+    let(:asin) { 'B01N7QZG8B' }
+
+    describe '.data' do
+      it 'returns the primary category as category data' do
+        expect(subject.data).to have_attributes(name: 'Sports & Outdoors', rank: 213)
       end
     end
   end
+
+  # TODO: Handle case where there is no primary category with a better secondary category strategy
+  context 'B077JZ4N7D (no primary category)' do
+    let(:asin) { 'B077JZ4N7D' }
+
+    describe '.data' do
+      it 'returns the primary category as category data' do
+        expect(subject.data).to be_nil
+      end
+    end
+  end
+
 end
