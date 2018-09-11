@@ -1,6 +1,6 @@
 # Amazon Product Fetcher
 
-This application allows a user to enter an Amazon Product's ASIN and then fetches the category, rank & product dimensions of that product on Amazon.
+This application allows a user to enter an Amazon Product's ASIN and then fetches the category, rank & product dimensions of that product from Amazon product pages.
 
 The application then stores the data related to the request of the page and it's HTTP response (status and body). Upon successful parsing of the product page, the product data is stored relationally in the database and joined to the initial page request record.
 
@@ -10,12 +10,7 @@ The application then stores the data related to the request of the page and it's
 
 #### Content Parsing Strategy
 
-The general strategy towards parsing data out of the HTML content is as follows:
-
-1. Load the entire product page into a DOM object.
-2. Locate the content sections surrounding the target content e.g. dimensions. See "[locators](https://github.com/alkema-ca/amazon_product/tree/master/app/integrations/amazon/locators)".
-3. Parse the inner text of the located DOM node using some regular expressions. See "[extractors](https://github.com/alkema-ca/amazon_product/tree/master/app/integrations/amazon/extractors)"
-4. In [some cases](https://github.com/alkema-ca/amazon_product/blob/master/app/integrations/amazon/extractors/primary_category.rb#L33) a fallback is used to scan the entire page if the located page node is empty. This is helpful because Amazon HTML structure can change page to page.
+The code related to parsing data out of the HTML content is found [here](https://github.com/alkema-ca/amazon_product/tree/master/app/integrations/amazon).
 
 #### Ruby version
 
