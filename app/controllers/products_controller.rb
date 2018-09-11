@@ -7,13 +7,17 @@ class ProductsController < ApplicationController
   end
 
   def create
-    asin = product_params[:asin]
+    @asin = product_params[:asin]
+    @page_request = Products::Fetcher.call(@asin)
 
-    if asin.blank?
-      flash[:alert] = 'Please enter an ASIN'
-    else
+    Products::Create.call(@page_request) if @page_request.status.to_i.between?(200, 299)
+
+    page_request_form
+
+    if @page_request_form.valid?
       flash[:notice] = 'Product fetched from ASIN'
-      FetchProductJob.perform_later(asin)
+    else
+      handle_flashes
     end
 
     redirect_to root_url
@@ -23,6 +27,28 @@ class ProductsController < ApplicationController
 
   def product_params
     params.require(:product).permit(:asin)
+  end
+
+  def page_request_form
+    @page_request_form = PageRequestForm.new(
+      asin: @asin,
+      status: @page_request.status,
+      product: @page_request.product
+    )
+  end
+
+  def handle_flashes
+    errors = @page_request_form.errors
+    messages = errors.messages
+
+    flash[:alert] =
+      if errors.keys.include?(:asin)
+        messages[:asin].first
+      elsif errors.keys.include?(:status)
+        messages[:status].first
+      else
+        'Product not created'
+      end
   end
 
 end

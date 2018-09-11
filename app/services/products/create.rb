@@ -3,9 +3,10 @@ class Products::Create
 
   extend Callable
 
-  def initialize(product_parser)
-    @product_parser = product_parser
-    @page_request = @product_parser.page_request
+  def initialize(page_request)
+    @page_request = page_request
+
+    @product_parser = Amazon::ProductParser.new(@page_request)
 
     @asin = @page_request.asin
     @body = @page_request.body

@@ -13,6 +13,8 @@ The general strategy towards parsing the content out is to:
 3. Parse the inner text of the located DOM node using some regular expressions
 4. In some cases a fallback is used to scan the entire page if the located page node is empty. This is helpful because Amazon HTML structure can change page to page.
 
+#### [Live Demo](https://amazon-product.herokuapp.com/)
+
 #### Ruby version
 
 2.5.1
