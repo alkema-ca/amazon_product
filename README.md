@@ -8,10 +8,6 @@ The application then stores the data related to the request of the page and it's
 
 [https://www.screencast.com/t/Fv55NpmKt](https://www.screencast.com/t/Fv55NpmKt)
 
-#### Live Demo
-
-[https://amazon-product.herokuapp.com/](https://amazon-product.herokuapp.com/)
-
 #### Content Parsing Strategy
 
 The general strategy towards parsing data out of the HTML content is as follows:
@@ -28,6 +24,7 @@ The general strategy towards parsing data out of the HTML content is as follows:
 #### Database creation
 
 ```
+cp config/database.example.yml config/database.yml
 rake db:create
 rake db:migrate
 ```
